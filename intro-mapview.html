@@ -1,0 +1,149 @@
+<!DOCTYPE html>
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta
+      name="viewport"
+      content="initial-scale=1,maximum-scale=1,user-scalable=no"
+    />
+    <title>
+      Intro to MapView - Create a 2D map | Sample | ArcGIS Maps SDK for
+      JavaScript 4.26
+    </title>
+    <style>
+      html,
+      body,
+      #viewDiv {
+          padding: 0;
+          margin: 0;
+          height: 100%;
+          width: 100%;
+      }
+    </style>
+
+    <style>
+      /* 样式表，用于设置网页样式 */
+
+      /* 设置页眉样式 */
+      header {
+          background-color: #333;   /* 设置背景颜色为黑色 */
+          color: #fff;              /* 设置文字颜色为白色 */
+          padding: 20px;            /* 设置内边距为 20 像素 */
+          text-align: center;       /* 设置文本居中对齐 */
+          font-size: 25px;          /* 设置字体大小为 25 像素 */
+      }
+    </style>
+
+    <link
+      rel="stylesheet"
+      href="https://js.arcgis.com/4.26/esri/themes/light/main.css"
+    />
+    <script src="https://js.arcgis.com/4.26/"></script>
+
+    <script>
+      require([
+        "esri/Map",
+        "esri/views/MapView",
+        "esri/layers/FeatureLayer",
+        "esri/widgets/Legend",
+        "esri/widgets/ScaleBar",
+        "esri/widgets/LayerList",
+        "esri/widgets/Search",
+        "esri/widgets/BasemapToggle",
+        "esri/widgets/BasemapGallery"
+      ], (
+        Map,
+        MapView,
+        FeatureLayer,
+        Legend,
+        ScaleBar,
+        LayerList,
+        Search,
+        BasemapToggle,
+        BasemapGallery
+      ) => {
+        var flayer = new FeatureLayer({
+          url: "https://www.geosceneonline.cn/server/rest/services/Hosted/全国各省教育经费/FeatureServer" //改成你的要素地图
+        });
+
+        const map = new Map({
+          basemap: "streets-vector", // The initial basemap to toggle from
+          ground: "world-elevation"
+        });
+
+        map.layers.add(flayer);
+
+        const view = new MapView({
+          container: "viewDiv",
+          map: map,
+          zoom: 6,
+          center: [118, 25] // longitude, latitude
+        });
+
+        var legend = new Legend({
+          view: view,
+          layerInfos: [
+            {
+              layer: flayer,
+              title: "教育经费"
+            }
+          ]
+        });
+        view.ui.add(legend, "bottom-right");
+
+        let scaleBar = new ScaleBar({
+          //比例尺
+          view: view,
+          style: "ruler",
+          unit: "metric"
+        });
+        view.ui.add(scaleBar, {
+          position: "bottom-left"
+        });
+
+        const searchWidget = new Search({
+          //搜索框
+          view: view
+        });
+        view.ui.add(searchWidget, {
+          position: "top-right",
+          index: 2
+        });
+
+        let layerList = new LayerList({
+          //图表
+          view: view
+        });
+        view.ui.add(layerList, {
+          position: "top-left"
+        });
+
+        const basemapToggle = new BasemapToggle({
+          view: view,
+          nextBasemap: "hybrid"
+        });
+
+        view.ui.add(basemapToggle, "bottom-right");
+
+        let basemapGallery = new BasemapGallery({
+          view: view
+        });
+        // Add widget to the top right corner of the view
+        view.ui.add(basemapGallery, {
+          position: "top-right"
+        });
+      });
+    </script>
+  </head>
+
+  <body>
+    <!-- 创建页眉 -->
+    <header>
+      <!-- 添加页眉标题 -->
+      <h1>全国各省2007~2015年度教育经费</h1>
+    </header>
+    <div id="viewDiv"></div>
+    <div id="basemapDiv"></div>
+  </body>
+</html>
